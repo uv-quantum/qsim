@@ -1,0 +1,9 @@
+tmp*
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+*/__pycache__/*
+a.out
+*.dSYM
+*.exe
+*.so
+build
