@@ -64,6 +64,8 @@ class Matrix:
             for i in range(len(m1)):
                 v = abs(m1[i]-m2[i])
                 e = v if v > e else e
+        else:
+            raise  Exception(f"Invalid data types {type(m1)} {type(m2)}")
         return e
 
     @classmethod
