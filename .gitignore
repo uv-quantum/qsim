@@ -7,3 +7,4 @@ a.out
 *.exe
 *.so
 build
+.idea

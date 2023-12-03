@@ -2,17 +2,18 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 Elem = float  # complex
+Array = list[Elem]
 
 
-def is_zero(x: float):
-    return x < 1e-9
+def is_zero(x: Elem):
+    return abs(x) < 1e-9  # works with complex too
 
 
 @dataclass(frozen=True)
 class Vector:
-    v: list[Elem]
+    v: Array
 
-    def __mul__(self, x: Elem) -> Vector:
+    def __mul__(self, x: Elem) -> Elem:
         return Vector([x * e for e in self.v])
 
     def __len__(self) -> int:
@@ -62,7 +63,7 @@ class Matrix:
 
     @classmethod
     def max_eps(cls, m1: Matrix | Vector, m2: Matrix | Vector) -> float:
-        e = 0.
+        e = 0.0
         if isinstance(m1, Matrix) and isinstance(m2, Matrix):
             for r in range(m1.num_rows()):
                 for c in range(m1.num_cols()):
@@ -90,13 +91,13 @@ class Matrix:
     def identity(cls, rows: int, cols: int) -> Matrix:
         m = Matrix.new(rows, cols)
         for i in range(rows):
-            m[i, i] = 1.
+            m[i, i] = 1.0
         return m
 
     def __matvec(self: Matrix, v: Vector) -> Vector:
         ret: list[float] = []
         for r in range(self.num_rows()):
-            x = 0.
+            x = 0.0
             for c in range(self.num_cols()):
                 x += self[r, c] * v[c]
             ret.append(x)
@@ -108,7 +109,7 @@ class Matrix:
         mat = Matrix.new(num_rows, num_cols)
         for r in range(num_rows):
             for c in range(num_cols):
-                x = 0.
+                x = 0.0
                 for i in range(num_cols):
                     x += self[r, i] * m[i, c]
                 mat[r, c] = x
@@ -162,7 +163,8 @@ class Matrix:
 @dataclass
 class UnitaryMatrix(Matrix):
     def __post_init__(self):
-        e = Matrix.max_eps(self.dagger() @ self,
-                           Matrix.identity(self.num_rows(), self.num_cols()))
+        e = Matrix.max_eps(
+            self.dagger() @ self, Matrix.identity(self.num_rows(), self.num_cols())
+        )
         if not is_zero(e):
             raise Exception("Non unitary matrix")

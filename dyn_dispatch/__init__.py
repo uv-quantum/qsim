@@ -1,1 +1,2 @@
-from dd2 import *
+from dd import *
+from test import test
